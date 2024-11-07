@@ -1,2 +1,6 @@
 ﻿.idea
 03_determine_condition/weights
+__pycache__
+01_vit_classification_model/vit_dataset
+02_yolo_segmentation_model/data_disease
+02_yolo_segmentation_model/data_plant
