@@ -1,3 +1,2 @@
 ﻿.idea
-01_condition_classification/02_model/__pycache__
-01_condition_classification/02_model/wandb
+03_determine_condition/weights
