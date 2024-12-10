@@ -8,6 +8,7 @@ import torch.nn.functional as F
 
 import albumentations as A
 from albumentations.pytorch.transforms import ToTensorV2
+import random
 
 # ----------- Condition Classification With ViT Model
 class VITModel(nn.Module):
@@ -114,5 +115,39 @@ def with_color(image, seg_masks):
             text_position = tuple(contour[0][0])
             cv2.putText(annotated_image, label if label else "Unknown", text_position, cv2.FONT_HERSHEY_SIMPLEX, 0.5,
                         color, 1)
+
+    return annotated_image
+
+
+
+# ----------- Random Labeling
+def random_classification():
+    """
+    랜덤으로 "fresh" 또는 "too much water"를 반환
+    """
+    return random.choice(["fresh", "too much water"])
+
+
+def with_random_color(image, seg_masks):
+    """
+    HSV를 기반으로 하지 않고 랜덤으로 라벨을 지정하여 마스크를 처리.
+    """
+    annotated_image = image.copy()
+
+    for mask in seg_masks:
+        # 랜덤 분류
+        label = random_classification()
+
+        # 컨투어 찾기
+        contours, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+        for contour in contours:
+            # 라벨에 따라 색상 결정
+            color = (0, 255, 0) if label == "fresh" else (0, 140, 255)
+            cv2.drawContours(annotated_image, [contour], -1, color, 2)
+
+            # 텍스트 위치 지정 및 라벨 추가
+            text_position = tuple(contour[0][0])
+            cv2.putText(annotated_image, label, text_position, cv2.FONT_HERSHEY_SIMPLEX, 0.5, color, 1)
 
     return annotated_image
